@@ -1,0 +1,25 @@
+.example-container {
+  display: flex;
+  height: 100vh;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.example-sidenav {
+  width: 250px;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.example-sidenav-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+nav {
+  width: 100%;
+}
+
+header, main {
+  width: 100%;
+}

@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>Create New Policy</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="mx-5">
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="w-full mb-5">
+      <mat-label>ID</mat-label>
+      <input matInput formControlName="id" placeholder="Enter ID" required>
+      <mat-error *ngIf="form.get('id')?.hasError('required') && form.get('id')?.touched">ID is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full mb-5">
+      <mat-label>Access Policy</mat-label>
+      <mat-select formControlName="accessPolicy" required>
+        <mat-option *ngFor="let policy of policies" [value]="policy">{{ policy.id }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('assetPolicy')?.hasError('required') && form.get('assetPolicy')?.touched">Access Policy is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full mb-5">
+      <mat-label>Contract Policy</mat-label>
+      <mat-select formControlName="contractPolicy" required>
+        <mat-option *ngFor="let policy of policies" [value]="policy">{{ policy.id }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('contractPolicy')?.hasError('required') && form.get('contractPolicy')?.touched">Contract Policy is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full mb-5">
+      <mat-label>Assets</mat-label>
+      <mat-select formControlName="assetId" required>
+        <mat-option *ngFor="let asset of assets" [value]="asset">{{ asset.id }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('assets')?.hasError('required') && form.get('assets')?.touched">Assets are required</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button
+      type="button"
+      (click)="closeDialog()"
+      class="text-gray-400 hover:text-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    >
+      Submit
+    </button>
+  </mat-dialog-actions>
+</form>

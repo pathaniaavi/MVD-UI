@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Asset } from '../Model/asset.model';
-import { environment } from '../environment/environment.prod';  
+import { environment } from '../environment/environment.prod';
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +12,15 @@ export class AssetService {
   ROOT_URL: string;
   httpOptions = {
     headers: new HttpHeaders({
-        'Content-Type':  'application/json'
+      'Content-Type': 'application/json'
     })
   };
 
-  private apiUrl = `${environment.protocol}://${environment.host}:${environment.port}/asset/submitAsset`;
-  private fetchUrl = `${environment.protocol}://${environment.host}:${environment.port}/asset/fetchAssets`;
-
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {
     this.ROOT_URL = `${environment.protocol}://${environment.host}:${environment.port}/${environment.asset}`;
   }
 
-  submitAsset(assetData: any): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
+  submitAsset(assetData: any, company: string): Observable<any> {
     const requestBody = {
       "@context": {
         "@vocab": "https://w3id.org/edc/v0.0.1/ns/"
@@ -45,18 +38,14 @@ export class AssetService {
       }
     };
 
-    return this.http.post<any>(this.apiUrl, requestBody, { headers });
+    return this.http.post<any>(`${this.ROOT_URL}/submitAsset/${company}`, requestBody, this.httpOptions);
   }
 
-  fetchAssets(): Observable<Asset[]> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    return this.http.post<Asset[]>(this.ROOT_URL+'/fetchAssets', {}, { headers });
+  fetchAssets(company: string): Observable<Asset[]> {
+    return this.http.post<Asset[]>(`${this.ROOT_URL}/fetchAssets/${company}`, {}, this.httpOptions);
   }
 
-  deleteAsset(assetId: string): Observable<any> {
-    return this.http.delete<any>(`${this.ROOT_URL}/deleteAsset/${assetId}`, this.httpOptions);
+  deleteAsset(assetId: string, company: string): Observable<any> {
+    return this.http.delete<any>(`${this.ROOT_URL}/deleteAsset/${company}/${assetId}`, this.httpOptions);
   }
 }

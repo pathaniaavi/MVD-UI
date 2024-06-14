@@ -16,14 +16,11 @@ export class ContractDefinitionService {
     })
   };
 
-  private apiUrl = `${environment.protocol}://${environment.host}:${environment.port}/${environment.contract}/submitContract`;
-  private fetchUrl = `${environment.protocol}://${environment.host}:${environment.port}/${environment.contract}/fetchContracts`;
-
   constructor(private http: HttpClient) {
-    this.ROOT_URL = `${environment.protocol}://${environment.host}:${environment.port}/${environment.contract}`;
+    this.ROOT_URL = `${environment.protocol}://${environment.host}:${environment.port}/contract`;
   }
 
-  submitContract(contractData: any): Observable<ContractDefinition> {
+  submitContract(contractData: any, company: string): Observable<ContractDefinition> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
@@ -45,19 +42,18 @@ export class ContractDefinitionService {
     };
     console.log(requestBody)
 
-    return this.http.post<ContractDefinition>(this.apiUrl, requestBody, { headers });
+    return this.http.post<ContractDefinition>(`${this.ROOT_URL}/submitContract/${company}`, requestBody, { headers });
   }
 
-
-  fetchContracts(): Observable<ContractDefinition[]> {
+  fetchContracts(company: string): Observable<ContractDefinition[]> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
-    return this.http.post<ContractDefinition[]>(this.fetchUrl, {}, { headers });
+    return this.http.post<ContractDefinition[]>(`${this.ROOT_URL}/fetchContracts/${company}`, {}, { headers });
   }
 
-  deleteContract(contractId: string): Observable<any> {
-    return this.http.delete<any>(`${this.ROOT_URL}/deleteContract/${contractId}`, this.httpOptions);
+  deleteContract(contractId: string, company: string): Observable<any> {
+    return this.http.delete<any>(`${this.ROOT_URL}/deleteContract/${company}/${contractId}`, this.httpOptions);
   }
 }

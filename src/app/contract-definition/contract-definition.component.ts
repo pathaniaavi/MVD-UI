@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { ContractDefinitionDialogComponent } from '../contract-definition-dialog/contract-definition-dialog.component';
 import { ContractDefinitionService } from '../services/contract-definition.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-contract-definition',
@@ -14,17 +15,27 @@ import { ContractDefinitionService } from '../services/contract-definition.servi
 export class ContractDefinitionComponent implements OnInit {
   contracts: any[] = [];
   totalContracts: number = 0;
-  constructor(
+  companyContext: string='';
+  constructor(private route: ActivatedRoute,
     public dialog: MatDialog,
     private contractService: ContractDefinitionService
   ) {}
 
+  setCompany(){
+    this.route.parent?.url.subscribe(url => {
+      const path = url[0].path;
+      this.companyContext = path;
+      console.log("Asset:",this.companyContext); // Log to verify
+    });
+  }
+
   ngOnInit(): void {
+    this.setCompany();
     this.fetchContracts();
   }
 
   fetchContracts(): void {
-    this.contractService.fetchContracts().subscribe({
+    this.contractService.fetchContracts(this.companyContext).subscribe({
       next: (response) => {
         this.contracts = response.map((contract) => {
           const assetSelector = contract['edc:assetsSelector'];
@@ -58,6 +69,7 @@ export class ContractDefinitionComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(ContractDefinitionDialogComponent, {
       width: '500px',
+      data:{ companyContext : this.companyContext }
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -70,7 +82,7 @@ export class ContractDefinitionComponent implements OnInit {
     });
   }
   deleteContract(id: string): void {
-    this.contractService.deleteContract(id).subscribe({
+    this.contractService.deleteContract(id,this.companyContext).subscribe({
       next: (response) => {
         console.log('Deleted policy:', response);
         this.fetchContracts(); // Refresh the list after deletion

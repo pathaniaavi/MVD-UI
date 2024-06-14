@@ -2,13 +2,10 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AssetDialogComponent } from '../asset-dialog/asset-dialog.component';
 import { AssetService } from '../services/asset.service';
-// import { CommonModule } from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
 
-import { trigger, style, transition, animate, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-asset',
@@ -18,20 +15,31 @@ import { trigger, style, transition, animate, keyframes } from '@angular/animati
   styleUrl: './asset.component.scss'
 })
 export class AssetComponent {
+  companyContext: string;
   assets: any[] = [];
   totalAssets: number = 0;
-    constructor(public dialog: MatDialog, private assetService: AssetService) {}
-
+    constructor(public dialog: MatDialog, private assetService: AssetService,private route: ActivatedRoute) {
+      this.companyContext = '';
+    }
+    setCompany(){
+      this.route.parent?.url.subscribe(url => {
+        const path = url[0].path;
+        this.companyContext = path;
+        console.log("Asset:",this.companyContext); // Log to verify
+      });
+    }
     ngOnInit(): void {
-      this.fetchAssets()
+      this.setCompany()
+      this.fetchAssets(this.companyContext);
     }
   openDialog(): void {
     const dialogRef = this.dialog.open(AssetDialogComponent, {
-      width: '500px',disableClose: true
+      width: '500px',disableClose: true,
+      data: { companyContext: this.companyContext }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.fetchAssets();
+        this.fetchAssets(this.companyContext);
       }
       else{
       console.error("The ID was not added due to an error or user cancellation.");
@@ -39,8 +47,9 @@ export class AssetComponent {
     });
   }
 
-  fetchAssets(): void {
-    this.assetService.fetchAssets().subscribe({
+  fetchAssets(company: string): void {
+
+    this.assetService.fetchAssets(company).subscribe({
       next: (response: any[]) => {
         this.assets = response.map(asset => ({
           id: asset['@id'],
@@ -60,21 +69,21 @@ export class AssetComponent {
 
 
   deleteAsset(id: string): void {
-    this.assetService.deleteAsset(id).subscribe({
+    this.assetService.deleteAsset(id,this.companyContext).subscribe({
       next: () => {
         console.log('Asset deleted successfully');
         // this.assets = this.assets.filter(asset => asset.id !== id);
         // this.totalAssets = this.assets.length;
-        this.fetchAssets();
+        this.fetchAssets(this.companyContext);
       },
       error: error => {
         console.error('Error deleting asset', error);
       }
     });
   }
-  
-  
+
+
   }
-  
+
 
 

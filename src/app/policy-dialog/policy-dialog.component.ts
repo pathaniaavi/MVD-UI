@@ -8,7 +8,7 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { Policy } from '../Model/policy.model';
 import { PolicyService } from '../services/policy.service';
-
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-policy-dialog',
   standalone: true,
@@ -26,8 +26,10 @@ import { PolicyService } from '../services/policy.service';
 export class PolicyDialogComponent  {
   form: FormGroup;
   policies: Policy[] =[];
+  companyContext: string='';
 
-  constructor(public dialogRef: MatDialogRef<PolicyDialogComponent>, private policyService: PolicyService) {
+  constructor(public dialogRef: MatDialogRef<PolicyDialogComponent>, private policyService: PolicyService,private route: ActivatedRoute ) {
+    this.setCompany()
     const defaultPermission = {
       action: "use",
       constraint: {
@@ -43,13 +45,20 @@ export class PolicyDialogComponent  {
       permission: new FormControl(JSON.stringify(defaultPermission, null, 2),)
     });
   }
-  
+  setCompany(){
+    this.route.parent?.url.subscribe(url => {
+      const path = url[0].path;
+      this.companyContext = path;
+      console.log("Asset:",this.companyContext); // Log to verify
+    });
+  }
+
 
   closeDialog(): void {
     this.dialogRef.close();
   }
- 
-  
+
+
 
   onSubmit(): void {
     if (this.form.valid) {
@@ -59,7 +68,7 @@ export class PolicyDialogComponent  {
   permissions = JSON.parse(this.form.get('permission')?.value);
         console.log(permissions)
       try {
-      
+
       } catch (error) {
         console.error('Invalid JSON format for permissions:', error);
         return; // Stop submission if permissions JSON is invalid
@@ -67,7 +76,7 @@ export class PolicyDialogComponent  {
 
       const requestBody = {
         "@context": {
-          "edc": "https://w3id.org/edc/v0.0.1/ns/"  
+          "edc": "https://w3id.org/edc/v0.0.1/ns/"
         },
         "@id": policy.id,
         "edc:policy": {
@@ -76,7 +85,7 @@ export class PolicyDialogComponent  {
         }
       };
 
-      this.policyService.submitPolicy(requestBody).subscribe({
+      this.policyService.submitPolicy(requestBody,this.companyContext).subscribe({
         next: (response) => {
           console.log('Policy submitted successfully:', response);
           this.dialogRef.close(true);
@@ -89,7 +98,7 @@ export class PolicyDialogComponent  {
       this.dialogRef.close(false);
     }
   }
-  
 
-  
+
+
 }

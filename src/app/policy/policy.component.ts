@@ -5,6 +5,7 @@ import { PolicyDialogComponent } from '../policy-dialog/policy-dialog.component'
 import { Policy } from '../Model/policy.model';
 import { PolicyService } from '../services/policy.service';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-policy',
@@ -17,21 +18,31 @@ export class PolicyComponent implements OnInit{
 totalAssets: number= 0;
   policies: any[]=[];
   totalPolicies: number=0;
+  companyContext: string="";
   ;
 
-  constructor(public dialog: MatDialog , private policyService: PolicyService ) {}
+  constructor(public dialog: MatDialog , private policyService: PolicyService ,private route: ActivatedRoute ) {}
 
+  setCompany(){
+    this.route.parent?.url.subscribe(url => {
+      const path = url[0].path;
+      this.companyContext = path;
+      console.log("Asset:",this.companyContext); // Log to verify
+    });
+  }
   ngOnInit(): void {
-    this.fetchPolicies();
+    this.setCompany()
+    this.fetchPolicies(this.companyContext);
   }
 
   openDialog(): void {
     const  dialogRef = this.dialog.open(PolicyDialogComponent, {
       width: '500px',
+      data :{ companyContext : this.companyContext}
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.fetchPolicies();
+        this.fetchPolicies(this.companyContext);
       }
       else{
       console.error("The ID was not added due to an error or user cancellation.");
@@ -41,8 +52,8 @@ totalAssets: number= 0;
 
   }
 
-  fetchPolicies(): void {
-    this.policyService.fetchPolicies().subscribe({
+  fetchPolicies(company :string): void {
+    this.policyService.fetchPolicies(company).subscribe({
       next: (response: any[]) => {
         this.policies = response.map(policy => ({
           id: policy['@id'],
@@ -55,17 +66,17 @@ totalAssets: number= 0;
       }
     });
   }
-  
+
 
   deletePolicy(policyId: string): void {
-    this.policyService.deletePolicy(policyId).subscribe({
+    this.policyService.deletePolicy(policyId,this.companyContext).subscribe({
       next: (response) => {
         console.log('Deleted policy:', response);
-        this.fetchPolicies();  // Refresh the list after deletion
+        this.fetchPolicies(this.companyContext);  // Refresh the list after deletion
       },
       error: (error) => {
         console.error('Error submitting policy:', error);
       }
     });
   }
-} 
+}

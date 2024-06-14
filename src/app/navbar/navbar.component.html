@@ -6,8 +6,8 @@
       <div class="justify-center flex-1 hidden md:flex">
         <div class="flex space-x-4">
           <!-- Use routerLink for navigation -->
-          <a routerLink="/company1" class="px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-md" aria-current="page">Company 1</a>
-          <a routerLink="/company2" class="px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white">Company 2</a>
+          <a routerLink="/company1" (click)="changeCompany('company1')" class="px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-md" aria-current="page">Company 1</a>
+          <a routerLink="/company2" (click)="changeCompany('company2')"class="px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white">Company 2</a>
         </div>
       </div>
       <div class="hidden md:block">
@@ -47,6 +47,6 @@
   </div>
 </nav>
 
-<app-sidebar></app-sidebar>
+<app-sidebar [companyContext]="companyContext"></app-sidebar>
 
 

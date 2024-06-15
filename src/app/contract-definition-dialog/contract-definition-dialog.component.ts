@@ -70,7 +70,6 @@ export class ContractDefinitionDialogComponent implements OnInit {
   }
   ngOnInit(): void {
     this.setCompany();
-    console.log('HSBHS:' + this.data.companyContext);
     this.policyService.fetchPolicies(this.data.companyContext).subscribe({
       next: (response: any[]) => {
         this.policies = response.map((policy) => ({
@@ -99,7 +98,7 @@ export class ContractDefinitionDialogComponent implements OnInit {
   onSubmit(): void {
     if (this.form.valid) {
       this.contractService
-        .submitContract(this.form.value, this.companyContext)
+        .submitContract(this.form.value, this.data.companyContext)
         .subscribe({
           next: (response) => {
             console.log('Contract submitted successfully', response);
@@ -107,9 +106,14 @@ export class ContractDefinitionDialogComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error submitting contract', error);
+            this.dialogRef.close(false);
           },
         });
-      this.dialogRef.close(false);
+
+
+    }
+    else{
+      // this.dialogRef.close(false);
     }
   }
 }

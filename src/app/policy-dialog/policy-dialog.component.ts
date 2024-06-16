@@ -4,7 +4,12 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormGroup,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Policy } from '../Model/policy.model';
 import { PolicyService } from '../services/policy.service';
@@ -21,84 +26,87 @@ import { ActivatedRoute } from '@angular/router';
     ReactiveFormsModule,
   ],
   templateUrl: './policy-dialog.component.html',
-  styleUrls: ['./policy-dialog.component.scss']
+  styleUrls: ['./policy-dialog.component.scss'],
 })
-export class PolicyDialogComponent  {
+export class PolicyDialogComponent {
   form: FormGroup;
-  policies: Policy[] =[];
-  companyContext: string='';
+  policies: Policy[] = [];
+  companyContext: string = '';
 
-  constructor(public dialogRef: MatDialogRef<PolicyDialogComponent>, private policyService: PolicyService,private route: ActivatedRoute ) {
-    this.setCompany()
+  constructor(
+    public dialogRef: MatDialogRef<PolicyDialogComponent>,
+    private policyService: PolicyService,
+    private route: ActivatedRoute
+  ) {
+    this.setCompany();
     const defaultPermission = {
-      action: "use",
+      action: 'use',
       constraint: {
-        "@type": "LogicalConstraint",
-        "leftOperand": "https://w3id.org/edc/v0.0.1/ns/regionLocation",
-        "operator": "eq",
-        "rightOperand": "eu"
-      }
+        '@type': 'LogicalConstraint',
+        leftOperand: 'https://w3id.org/edc/v0.0.1/ns/regionLocation',
+        operator: 'eq',
+        rightOperand: 'eu',
+      },
     };
 
     this.form = new FormGroup({
       id: new FormControl('', [Validators.required]),
-      permission: new FormControl(JSON.stringify(defaultPermission, null, 2),)
+      permission: new FormControl(JSON.stringify(defaultPermission, null, 2)),
     });
   }
-  setCompany(){
-    this.route.parent?.url.subscribe(url => {
+  setCompany() {
+    this.route.parent?.url.subscribe((url) => {
       const path = url[0].path;
       this.companyContext = path;
-      console.log("Asset:",this.companyContext); // Log to verify
+      console.log('Asset:', this.companyContext); // Log to verify
     });
   }
-
 
   closeDialog(): void {
     this.dialogRef.close();
   }
-
-
 
   onSubmit(): void {
     if (this.form.valid) {
       console.log(this.form.value);
       const policy = this.form.value;
       let permissions;
-  permissions = JSON.parse(this.form.get('permission')?.value);
-        console.log(permissions)
+      permissions = JSON.parse(this.form.get('permission')?.value);
+      console.log(permissions);
       try {
-
       } catch (error) {
         console.error('Invalid JSON format for permissions:', error);
         return; // Stop submission if permissions JSON is invalid
       }
 
       const requestBody = {
-        "@context": {
-          "edc": "https://w3id.org/edc/v0.0.1/ns/"
+        '@context': {
+          '@vocab': 'https://w3id.org/edc/v0.0.1/ns/',
+          'odrl': 'http://www.w3.org/ns/odrl/2/',
         },
-        "@id": policy.id,
-        "edc:policy": {
-          "@context": "http://www.w3.org/ns/odrl.jsonld",
-          "permission": policy.permissions
-        }
+        '@id': policy.id,
+        'policy': {
+          '@context': 'http://www.w3.org/ns/odrl.jsonld',
+          '@type': 'set',
+          'permission': policy.permissions,
+          'prohibition': [],
+          'obligation': [],
+        },
       };
 
-      this.policyService.submitPolicy(requestBody,this.companyContext).subscribe({
-        next: (response) => {
-          console.log('Policy submitted successfully:', response);
-          this.dialogRef.close(true);
-          // Refresh the list after submission
-        },
-        error: (error) => {
-          console.error('Error submitting policy:', error);
-        }
-      });
+      this.policyService
+        .submitPolicy(requestBody, this.companyContext)
+        .subscribe({
+          next: (response) => {
+            console.log('Policy submitted successfully:', response);
+            this.dialogRef.close(true);
+            // Refresh the list after submission
+          },
+          error: (error) => {
+            console.error('Error submitting policy:', error);
+          },
+        });
       this.dialogRef.close(false);
     }
   }
-
-
-
 }

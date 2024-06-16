@@ -7,6 +7,8 @@ import { ContractComponent } from './contract/contract.component';
 import { CatalogBrowserComponent } from './catalog-browser/catalog-browser.component';
 import { Company1Component } from './company1/company1.component';
 import { Company2Component } from './company2/company2.component';
+import { AgreementComponent } from './agreement/agreement.component';
+import { TransferComponent } from './transfer/transfer.component';
 
 export const routes: Routes = [
   {
@@ -18,6 +20,8 @@ export const routes: Routes = [
       { path: 'contractDefinition', component: ContractDefinitionComponent },
       { path: 'contract', component: ContractComponent },
       { path: 'catalogBrowser', component: CatalogBrowserComponent },
+      { path: 'Agreement', component: AgreementComponent },
+      { path: 'transfer', component: TransferComponent },
     ]
   },
   {
@@ -29,6 +33,8 @@ export const routes: Routes = [
       { path: 'contractDefinition', component: ContractDefinitionComponent },
       { path: 'contract', component: ContractComponent },
       { path: 'catalogBrowser', component: CatalogBrowserComponent },
+      { path: 'Agreement', component: AgreementComponent },
+      { path: 'transfer', component: TransferComponent },
     ]
   },
   { path: '', redirectTo: '/company1', pathMatch: 'full' }

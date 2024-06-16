@@ -6,4 +6,5 @@ export const environment = {
   policy: "policy",
   contract: "contract",
   admin: "admin",
+  negotiate:"negotiate"
 };

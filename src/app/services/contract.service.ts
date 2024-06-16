@@ -7,7 +7,7 @@ import { environment } from '../environment/environment.prod';
 @Injectable({
   providedIn: 'root'
 })
-export class ContractDefinitionService {
+export class ContractService {
 
   ROOT_URL: string;
   httpOptions = {
@@ -18,6 +18,9 @@ export class ContractDefinitionService {
 
   constructor(private http: HttpClient) {
     this.ROOT_URL = `${environment.protocol}://${environment.host}:${environment.port}/contract`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
   }
 
   submitContract(contractData: any, company: string): Observable<ContractDefinition> {
@@ -27,7 +30,7 @@ export class ContractDefinitionService {
 
     const requestBody = {
       "@context": {
-        "edc": "https://w3id.org/edc/v0.0.1/ns/"
+         "@vocab": "https://w3id.org/edc/v0.0.1/ns/"
       },
       "@id": contractData.id,
       "accessPolicyId": contractData.accessPolicy.id,
@@ -56,4 +59,14 @@ export class ContractDefinitionService {
   deleteContract(contractId: string, company: string): Observable<any> {
     return this.http.delete<any>(`${this.ROOT_URL}/deleteContract/${company}/${contractId}`, this.httpOptions);
   }
+
+  fetchAllContractsAgreements(company:string): Observable<any[]> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.post<ContractDefinition[]>(`${this.ROOT_URL}/contractagreements/${company}`, {}, { headers });
+  }
+
+  
 }

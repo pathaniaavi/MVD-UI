@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>Create New Policy</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="mx-5 form-container">
+
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="w-full mb-5">
+      <mat-label>Contract Agreement ID</mat-label>
+      <input matInput formControlName="contractID" placeholder="Contract Agreement ID" required />
+      <mat-error *ngIf="form.get('contractID')?.hasError('required') && form.get('contractID')?.touched">
+        Contract Agreement ID is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full mb-5">
+      <mat-label>Asset ID</mat-label>
+      <input matInput formControlName="assetID" placeholder="assetID" required />
+      <mat-error *ngIf="form.get('assetID')?.hasError('required') && form.get('assetID')?.touched">
+        Asset ID is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full mb-5">
+      <mat-label>Destination URL</mat-label>
+      <input matInput formControlName="baseUrl" placeholder="Destination URL" required />
+      <mat-error *ngIf="form.get('baseUrl')?.hasError('required') && form.get('baseUrl')?.touched">
+        Destination URL is required
+      </mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button
+      type="button"
+      (click)="closeDialog()"
+      class="text-gray-400 hover:text-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      [disabled]="form.invalid"
+    >
+      Submit
+    </button>
+  </mat-dialog-actions>
+</form>

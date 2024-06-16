@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Agreement State</h2>
+
+<mat-dialog-content>
+  <div class="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <h6 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+      {{ negotiation?.contractAgreementId }}
+    </h6>
+
+    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+      contract type: {{ negotiation?.type }}
+    </p>
+    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+      contract state:
+      <span
+        [ngClass]="{
+          'bg-yellow-500 text-white px-1': negotiation?.state === 'VERIFIED',
+          'bg-green-500 text-white px-1': negotiation?.state === 'FINALIZED'
+        }"
+        class="rounded"
+      >
+        {{ negotiation?.state }}
+      </span>
+    </p>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    type="button"
+    (click)="getAgreementData()"
+    class="text-gray-400 hover:text-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+  >
+    Refresh state
+  </button>
+  <button
+    (click)="dialogRef.close()"
+    type="submit"
+    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+  >
+    ok
+  </button>
+</mat-dialog-actions>

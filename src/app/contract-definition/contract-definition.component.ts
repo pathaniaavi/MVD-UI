@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { ContractDefinitionDialogComponent } from '../contract-definition-dialog/contract-definition-dialog.component';
-import { ContractDefinitionService } from '../services/contract-definition.service';
+import { ContractService } from '../services/contract.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -18,7 +18,7 @@ export class ContractDefinitionComponent implements OnInit {
   companyContext: string='';
   constructor(private route: ActivatedRoute,
     public dialog: MatDialog,
-    private contractService: ContractDefinitionService
+    private contractService: ContractService
   ) {}
 
   setCompany(){

@@ -1,0 +1,44 @@
+
+
+<h2>
+  <span class="flex mb-2 text-3xl font-extrabold tabular-nums text-slate-900 counter" >
+
+      <span class="inline-flex mb-2 font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-300"> Total Agreements : </span>
+      <span :class="{ 'counter': shown }" x-data="{ shown: false }" x-intersect="shown = true">
+            {{ totalAgreements}}
+      </span>
+  </span>
+</h2>
+
+<div class="grid grid-cols-3 gap-1 mb-4">
+
+  <div class="pt-5" *ngFor="let agreement of agreements">
+    <div
+      class="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    >
+
+        <p
+          class="mb-2  font-bold tracking-tight text-gray-900 dark:text-white"
+        >
+        {{ agreement.id  }}
+      </p>
+
+
+      <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+        Agreement Asset Id: {{ agreement.agreementAssetName }}
+      </p>
+      <button (click)="checkStatus(agreement)"
+        class="px-4 py-2 text-sm font-medium text-center text-white bg-green-500 rounded-lg hover:bg-green-700 focus:ring-3 focus:outline-none focus:ring-blue-300"
+        type="button"
+      >
+        check State
+      </button>
+      <button (click)="checkStatus(agreement)"
+      class="px-4 py-2 text-sm font-medium text-center text-white bg-green-500 rounded-lg hover:bg-green-700 focus:ring-3 focus:outline-none focus:ring-blue-300"
+      type="button"
+    >
+      check State
+    </button>
+    </div>
+  </div>
+</div>

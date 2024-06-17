@@ -18,7 +18,7 @@ import { Inject } from '@angular/core';
 import { TransferService } from '../services/transfer.service';
 
 interface Data {
-  company: string;
+  companyContext: string;
 }
 
 @Component({
@@ -56,10 +56,11 @@ export class TransferDialogComponent {
   }
 
   onSubmit(): void {
+    console.log(this.data.companyContext)
     if (this.form.valid) {
       console.log(this.form.value)
       this.transferService
-        .createTransferRequest(this.form.value, this.data.company)
+        .createTransferRequest(this.form.value, this.data.companyContext)
         .subscribe({
           next: (res) => {
             console.log(res);

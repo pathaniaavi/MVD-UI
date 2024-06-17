@@ -34,6 +34,8 @@ export class TransferComponent implements  OnInit{
   }
 
   openDialog(): void {
+console.log("openDialog",this.companyContext)
+
     const dialogRef = this.dialog.open(TransferDialogComponent, {
       width: '500px',
       data: { companyContext: this.companyContext }

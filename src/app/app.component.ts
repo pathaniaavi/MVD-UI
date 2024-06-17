@@ -11,7 +11,7 @@ import { NavbarComponent } from './navbar/navbar.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  title = 'MVD-UI';
+  title = 'MVD DEMO';
 
   ngOnInit(): void {
     // initFlowbite();

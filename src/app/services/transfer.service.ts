@@ -37,7 +37,7 @@ export class TransferService {
       'Content-Type': 'application/json'
     });
     const companyName = company=='company1'? 'company2':'company1';
-console.log("Check Data Form :", form.contractId )
+// console.log("Check Data Form :", form.contractId )
     const transferRequest = {
       "@context": {
         "@vocab": "https://w3id.org/edc/v0.0.1/ns/"
@@ -54,6 +54,7 @@ console.log("Check Data Form :", form.contractId )
       }
     };
 
+    console.log("transferRequest:", transferRequest )
     return this.http.post<any>(`${this.ROOT_URL}/transferprocesses/${company}`, transferRequest, { headers});;
   }
 }

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit, inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,7 +13,13 @@ import {
 import { CommonModule } from '@angular/common';
 import { Policy } from '../Model/policy.model';
 import { PolicyService } from '../services/policy.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { filter } from 'rxjs';
+
+interface Data{
+  company :string
+}
 @Component({
   selector: 'app-policy-dialog',
   standalone: true,
@@ -28,7 +34,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './policy-dialog.component.html',
   styleUrls: ['./policy-dialog.component.scss'],
 })
-export class PolicyDialogComponent {
+export class PolicyDialogComponent implements OnInit {
   form: FormGroup;
   policies: Policy[] = [];
   companyContext: string = '';
@@ -36,9 +42,13 @@ export class PolicyDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<PolicyDialogComponent>,
     private policyService: PolicyService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute, private cookieService: CookieService, private router: Router,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.setCompany();
+
+
+
+    console.log("COmpany Data : ", this.companyContext)
     const defaultPermission = {
       action: 'use',
       constraint: {
@@ -53,13 +63,28 @@ export class PolicyDialogComponent {
       id: new FormControl('', [Validators.required]),
       permission: new FormControl(JSON.stringify(defaultPermission, null, 2)),
     });
+
+    const companyCookie = this.cookieService.get('company');
+    console.log('Company cookie value:', companyCookie);
   }
-  setCompany() {
-    this.route.parent?.url.subscribe((url) => {
-      const path = url[0].path;
-      this.companyContext = path;
-      console.log('Asset:', this.companyContext); // Log to verify
-    });
+  ngOnInit(): void {
+    this.setCompany(this.router.url);
+
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(event => {
+        const navEndEvent = event as NavigationEnd;
+        this.setCompany(navEndEvent.urlAfterRedirects);
+        this.cookieService.set('companyContext', this.companyContext);
+        console.log('Updated company context on navigation:', this.companyContext);
+      });
+  }
+  setCompany(url: string): void {
+    if (url.includes('/company2')) {
+      this.companyContext = 'company2';
+    } else {
+      this.companyContext = 'company1';
+    }
   }
 
   closeDialog(): void {
@@ -88,7 +113,7 @@ export class PolicyDialogComponent {
         'policy': {
           '@context': 'http://www.w3.org/ns/odrl.jsonld',
           '@type': 'set',
-          'permission': policy.permissions,
+          'permission': policy.permissions ||[],
           'prohibition': [],
           'obligation': [],
         },
